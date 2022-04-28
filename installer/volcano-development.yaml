@@ -121,7 +121,7 @@ metadata:
   name: volcano-admission
   namespace: volcano-system
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: volcano-admission
@@ -130,6 +130,16 @@ spec:
       labels:
         app: volcano-admission
     spec:
+      affinity:
+        podAntiAffinity:
+           requiredDuringSchedulingIgnoredDuringExecution:
+             - labelSelector:
+                 matchExpressions:
+                   - key: "app"
+                     operator: In
+                     values:
+                     - volcano-admission
+               topologyKey: "kubernetes.io/hostname"
       serviceAccount: volcano-admission
       priorityClassName: system-cluster-critical
       containers:
